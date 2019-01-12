@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# pip
+!Pipfile*
+
+# idea
+photo_album_server/.idea/
+photo_album_vue/.idea/
+
 # Distribution / packaging
 .Python
 build/
