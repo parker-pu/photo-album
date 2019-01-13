@@ -19,14 +19,12 @@ from django.urls import path, re_path, include
 
 from photo_album_server import settings
 from photo_album_server.api_urls.version1 import router_v1
-# from photos.views import PhotoViewSet
 from user.views import AuthTokenView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router_v1.urls)),  # 相应的接口
 
-    # path('api/v1/photos/', PhotoView.as_view()),  # 上传图片
     path('api-token-auth/', AuthTokenView.as_view()),  # token 认证
 
     re_path('static/(?P<path>.*)$', static.serve,

@@ -43,7 +43,10 @@ class CustomException:
         error_zh = self.__error_type(exc=exc)
 
         detailed_error = {}
-        if isinstance(exc, (rest_framework.exceptions.ValidationError,)):
+        if isinstance(exc, (
+                rest_framework.exceptions.APIException,
+                rest_framework.exceptions.AuthenticationFailed,
+        )):
             if isinstance(exc.detail, (dict,)):
                 # err_fields = ["string", "code"]
                 for k, v in exc.detail.items():

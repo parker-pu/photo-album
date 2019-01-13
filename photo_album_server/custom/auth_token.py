@@ -59,7 +59,7 @@ class ExpiringTokenAuthentication(BaseAuthentication):
         try:
             token = self.model.objects.get(key=key)
         except self.model.DoesNotExist:
-            raise exceptions.AuthenticationFailed('登录失败')
+            raise exceptions.AuthenticationFailed('认证失败')
 
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed('用户被禁止')

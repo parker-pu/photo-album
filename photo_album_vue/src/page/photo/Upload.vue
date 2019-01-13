@@ -1,56 +1,138 @@
 <template>
-  <el-upload
-    class="upload-demo"
-    drag
-    name="file"
-    :action="startUpload()"
-    multiple
-    enctype="multipart/form-data"
-    :on-error="uploadError"
-    :on-success="handleAvatarSuccess"
-    :before-upload="beforeUpload">
-    <i class="el-icon-upload"></i>
-    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-  </el-upload>
+  <div style="padding: 50px;">
+    <el-form class="form-wrapper padding"
+             ref="editForm"
+             :model="editForm"
+             :rules="editRules"
+             label-width="110px">
+      <el-form-item label="描述：">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 4}"
+          placeholder="请输入内容"
+          v-model="fileData.describe">
+        </el-input>
+      </el-form-item>
+      <el-form-item label="上传图片：" prop="photo">
+        <el-upload
+          :action="base"
+          :before-upload="beforeUploadPicture"
+          multiple
+          accept="image/png, image/jpeg, image/jpg"
+          list-type="picture-card"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove"
+          :on-progress="uploadProgress"
+          :on-success="uploadSuccess"
+          :on-error="uploadError"
+          name="photo"
+          :data="fileData"
+          :file-list="editFiles"
+          :headers="myHeaders"
+          :show-file-list="true">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="editEnsure">保存</el-button>
+      </el-form-item>
+    </el-form>
+    <el-dialog class="preview-modal" :visible.sync="imgVisible" append-to-body>
+      <img width="100%" :src="dialogImageUrl" alt="photo">
+    </el-dialog>
+  </div>
 </template>
-
 <script>
+import imgApi from '../../api/images' // 配置了图片上传接口地址的js文件
+import store from '../../store'
+
 export default {
   data () {
-    return {}
+    return {
+      editVisible: false,
+      fileData: {
+        describe: null
+      },
+      myHeaders: {
+        Authorization: store.state.token
+      },
+      editForm: { // 编辑表单
+        photo: '', // 活动图片
+        describe: '' // 图片描述
+      },
+      editRules: { // 表单验证规则
+        photo: [{required: true, message: '请上传活动图片', trigger: 'blur'}]
+      },
+      editFiles: [], // 编辑时已上传图片初始化
+      submitImg: [], // 需要提交的图片
+      uploadComplete: true,
+      base: imgApi.uploadUrl(),
+      imgVisible: false, // 上传图片预览
+      dialogImageUrl: '' // 图片预览地址
+    }
+  },
+  created () {
+    this.initInfo()
   },
   methods: {
-    startUpload () {
-      // 生产环境和开发环境的判断
-      // return process.env.BASE_API + '/api/v1/photos/'
-      return '/api/v1/photos/'
-    },
-    beforeUpload (file) {
-      this.files = file
-      const extension = file.name.split('.')[1].toUpperCase() === 'JPG'
-      const extension2 = file.name.split('.')[1].toUpperCase() === 'PNG'
-      const isLt2M = file.size / 1024 / 1024 < 20
-      if (!extension && !extension2) {
-        this.$message.warning('上传的图片格式只能是 jpg 或者是 png')
+    // 编辑
+    initInfo () {
+      // 这里photo应从服务器获取，存储的是数组，请按照相应格式获取图片url（这里直接给值）
+      let temp = []
+      if (temp.length > 0) {
+        for (let t = 0; t < temp.length; t++) {
+          // 通过[{name: 'name', url: 'url地址'}]格式初始化照片墙
+          this.editFiles.push({name: 'name' + temp[t].id, url: temp[t].photo})
+          if (t === 0) {
+            this.editForm.photo += temp[t].photo
+          } else {
+            // 最终photo的格式是所有已上传的图片的url拼接的字符串（逗号隔开），根据实际需要修改格式
+            this.editForm.photo += ',' + temp[t].photo
+          }
+        }
       }
-      if (!isLt2M) {
-        this.$message.warning('上传图片大小不能超过 20MB!')
-      }
-      // this.fileName = file.name
-      return true // 返回false不会自动上传
+      this.editVisible = true
     },
+    // 确认修改
+    editEnsure () {
+      if (!this.uploadComplete) {
+        this.$message.error('图片正在上传，请稍等')
+        return
+      }
+      console.info(this.editForm.photo)
+      // 调用接口...
+    },
+    // 上传图片前调用方法
+    beforeUploadPicture (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.$message.error('上传图片不能大于10M')
+        return false
+      }
+    },
+    // 上传图片时调用
+    uploadProgress (event, file, fileList) {
+      this.uploadComplete = false
+    },
+    // 上传图片成功
+    uploadSuccess (res, file, fileList) {
+      this.uploadComplete = true
+      this.$set(this.submitImg, res.id, res.name)
+      // this.fileChange(fileList)
+    },
+    // 上传图片出错
     uploadError () {
-      this.$message.error('上传失败，请重新上传')
+      // uploadError (err, file, fileList) {
+      this.$message.error('上传出错')
     },
-    handleAvatarSuccess (res, file) {
-      alert(res)
-      console.log(res)
-      alert(file)
+    // 移除图片
+    handleRemove (file, fileList) {
+      // this.fileChange(fileList)
+    },
+    // 图片预览
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url
+      this.imgVisible = true
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

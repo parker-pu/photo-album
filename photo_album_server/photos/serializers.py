@@ -11,12 +11,3 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PhotoModel
         fields = "__all__"
-
-    def update(self, instance, validated_data):
-        print(validated_data)
-        pass
-
-    def create(self, validated_data):
-        print(validated_data)
-        # instance = self.Meta.model.objects.create(**validated_data)
-        # return instance

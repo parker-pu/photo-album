@@ -14,9 +14,12 @@ class PhotoModel(models.Model):
         default='',
         verbose_name='用户'
     )
+    name = models.TextField(verbose_name="图片名称")
     describe = models.TextField(verbose_name="图片描述")
-    # thumbnail = models.TextField(verbose_name="缩略图")
-    thumbnail = models.ImageField(verbose_name="缩略图")
+    thumbnail = models.ImageField(
+        verbose_name="缩略图"
+        , upload_to="static/user_img"
+    )
     insert_time = models.DateTimeField(auto_now=True, verbose_name="插入时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间")
 
