@@ -1,4 +1,4 @@
-# y
+# photo-album
 
 > 相册
 
