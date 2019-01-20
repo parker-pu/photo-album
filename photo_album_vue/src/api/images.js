@@ -1,12 +1,20 @@
 import instance from '../axios'
 
 export default {
-  // 用户注册
+  // 图片缓存上传
   uploadUrl () {
-    return '/api/v1/photos/'
+    return '/api/v1/photos-cache/'
   },
-  // 用户登录
-  userLogin (data) {
-    return instance.post('/api-token-auth/', data)
+  // 提交缓冲区中的图片
+  photoAdd (data) {
+    return instance.post('/api/v1/photos/', data)
+  },
+  // 获取缓冲区中的图片
+  cachePhotoGet () {
+    return instance.get('/api/v1/photos-cache/')
+  },
+  // 缓存的图片删除
+  cachePhotoDel (data) {
+    return instance.delete('/api/v1/photos-cache/' + data.id + '/')
   }
 }

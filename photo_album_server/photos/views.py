@@ -1,66 +1,96 @@
 # Create your views here.
-from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
+import os
 from rest_framework import viewsets, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from custom.auth_token import (
-    ExpiringTokenAuthentication
-)
 from custom.permission import CustomPermission
-from photos.models import PhotoModel
-from photos.serializers import PhotoSerializer
+from photos.models import PhotoModel, PhotoCacheModel
+from photos.serializers import PhotoSerializer, PhotoCacheSerializer
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
     """ 处理图片
     """
     permission_classes = (CustomPermission,)  # 设置权限
-    parser_classes = (MultiPartParser,)
 
     queryset = PhotoModel.objects.all()
     serializer_class = PhotoSerializer
 
-    @staticmethod
-    def img_to_square(im_pic):
-        """ 把图片处理成正方形
-        :param im_pic:
-        :return:
+    def perform_destroy(self, instance):
+        """ 删除图片
         """
-        w, h = im_pic.size
-        if w >= h:
-            w_start = (w - h) * 0.618
-            box = (w_start, 0, w_start + h, h)
-            region = im_pic.crop(box)
-        else:
-            h_start = (h - w) * 0.618
-            box = (0, h_start, w, h_start + w)
-            region = im_pic.crop(box)
-        return region
+        instance.thumbnail.delete()
+        instance.delete()
 
-    def to_thumbnail(self, img_obj):
-        """ 这个函数的作用是把图片处理成缩略图
-        :param img_obj:
-        :return:
+    def get_queryset(self):
+        """ 筛选出数据库中只有当前用户的数据
         """
-        pic = Image.open(img_obj)
-        region = self.img_to_square(pic)
+        user = self.request.user
+        return PhotoModel.objects.filter(user=user)
 
-        # 先保存到磁盘io
-        pic_io = BytesIO()
-        region.save(pic_io, pic.format)
+    def create(self, request, *args, **kwargs):
+        """ 处理缓存文件
 
-        # 再转化为InMemoryUploadedFile数据
-        pic_file = InMemoryUploadedFile(
-            file=pic_io,
-            field_name=None,
-            name=img_obj.name,
-            content_type=img_obj.content_type,
-            size=pic.size,
-            charset=None
-        )
-        return pic_file
+        作用主要是把缓冲的图片移动到相应的数据库中
+        """
+
+        # 获取用户的信息
+        user = self.request.user
+
+        # 从缓冲区中取出数据放入到对应的数据库中
+        # 更新描述信息
+        try:
+            PhotoCacheModel.objects.filter(user=user) \
+                .update(describe=request.data.get('describe'))
+
+            # 把缓冲区中的数据移动到对应的数据中
+            cache_img_data = PhotoCacheModel.objects.filter(user=user)
+            for line_data in cache_img_data:
+                PhotoModel.objects.create(
+                    user=line_data.user,
+                    describe=line_data.describe,
+                    name=line_data.name,
+                    photo_url=line_data.photo_url,
+                    thumbnail=line_data.thumbnail,
+                    insert_time=line_data.insert_time,
+                    update_time=line_data.update_time
+                )
+                # os.remove(line_data.thumbnail)
+
+            # 删除缓冲区中的数据
+            PhotoCacheModel.objects.filter(user=user).delete()
+
+            return Response(
+                data="提交成功",
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as e:
+            print(e)
+
+
+class PhotoCacheViewSet(viewsets.ModelViewSet):
+    """ 处理缓存的图片
+
+    图片上传之后，先缓存一下，等待提交，当用户点击提交之后，就把图片提交
+    """
+    permission_classes = (CustomPermission,)  # 设置权限
+    parser_classes = (MultiPartParser,)
+
+    queryset = PhotoCacheModel.objects.all()
+    serializer_class = PhotoCacheSerializer
+
+    def perform_destroy(self, instance):
+        """ 删除图片
+        """
+        instance.thumbnail.delete()
+        instance.delete()
+
+    def get_queryset(self):
+        """ 筛选出数据库中只有当前用户的数据
+        """
+        user = self.request.user
+        return PhotoCacheModel.objects.filter(user=user)
 
     def create(self, request, *args, **kwargs):
         """ 新增文件
@@ -72,10 +102,10 @@ class PhotoViewSet(viewsets.ModelViewSet):
         # 图片处理成缩略图
         # thumbnail = self.to_thumbnail(img_obj)
 
-        # 认证请求信息,获取用户与token信息
-        user, token = ExpiringTokenAuthentication().authenticate(request)
+        # 获取用户信息
+        user = self.request.user
 
-        back_data = PhotoModel.objects.create(
+        back_data = PhotoCacheModel.objects.create(
             user=user,
             name=img_obj.name,
             describe=request.data.get('describe'),

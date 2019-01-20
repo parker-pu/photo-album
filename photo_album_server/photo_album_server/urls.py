@@ -16,10 +16,14 @@ Including another URLconf
 from django.conf.urls import static
 from django.contrib import admin
 from django.urls import path, re_path, include
-
 from photo_album_server import settings
-from photo_album_server.api_urls.version1 import router_v1
 from user.views import AuthTokenView
+from rest_framework import routers
+from photos.views import PhotoViewSet, PhotoCacheViewSet
+
+router_v1 = routers.DefaultRouter()
+router_v1.register(r'photos-cache', PhotoCacheViewSet)
+router_v1.register(r'photos', PhotoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

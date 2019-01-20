@@ -15,13 +15,13 @@
       </el-form-item>
       <el-form-item label="上传图片：" prop="photo">
         <el-upload
-          :action="base"
+          :action="upLoadUrl"
           :before-upload="beforeUploadPicture"
           multiple
           accept="image/png, image/jpeg, image/jpg"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove"
+          :on-remove="photoRemoveFun"
           :on-progress="uploadProgress"
           :on-success="uploadSuccess"
           :on-error="uploadError"
@@ -34,7 +34,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="editEnsure">保存</el-button>
+        <el-button type="primary" @click="photoSubmit">保存</el-button>
       </el-form-item>
     </el-form>
     <el-dialog class="preview-modal" :visible.sync="imgVisible" append-to-body>
@@ -63,10 +63,11 @@ export default {
       editRules: { // 表单验证规则
         photo: [{required: true, message: '请上传活动图片', trigger: 'blur'}]
       },
-      editFiles: [], // 编辑时已上传图片初始化
-      submitImg: [], // 需要提交的图片
+      removeData: '',
+      editFiles: [],
+      // submitImg: [], // 需要提交的图片
       uploadComplete: true,
-      base: imgApi.uploadUrl(),
+      upLoadUrl: imgApi.uploadUrl(),
       imgVisible: false, // 上传图片预览
       dialogImageUrl: '' // 图片预览地址
     }
@@ -75,32 +76,43 @@ export default {
     this.initInfo()
   },
   methods: {
-    // 编辑
+    // 获取缓存的图片
     initInfo () {
       // 这里photo应从服务器获取，存储的是数组，请按照相应格式获取图片url（这里直接给值）
       let temp = []
-      if (temp.length > 0) {
-        for (let t = 0; t < temp.length; t++) {
-          // 通过[{name: 'name', url: 'url地址'}]格式初始化照片墙
-          this.editFiles.push({name: 'name' + temp[t].id, url: temp[t].photo})
-          if (t === 0) {
-            this.editForm.photo += temp[t].photo
-          } else {
-            // 最终photo的格式是所有已上传的图片的url拼接的字符串（逗号隔开），根据实际需要修改格式
-            this.editForm.photo += ',' + temp[t].photo
+      imgApi.cachePhotoGet().then((response) => {
+        temp = response.data
+        if (temp.length > 0) {
+          for (let t = 0; t < temp.length; t++) {
+            // 通过[{name: 'name', url: 'url地址'}]格式初始化照片墙
+            this.editFiles.push({
+              name: temp[t].name,
+              url: temp[t].thumbnail,
+              id: temp[t].id
+            })
           }
         }
-      }
-      this.editVisible = true
+        this.editVisible = true
+      }).catch((error) => {
+        console.log(error)
+      })
     },
-    // 确认修改
-    editEnsure () {
+    // 提交图片
+    photoSubmit () {
       if (!this.uploadComplete) {
-        this.$message.error('图片正在上传，请稍等')
+        this.$message.error('图片正在提交')
         return
       }
-      console.info(this.editForm.photo)
-      // 调用接口...
+      // 调用提交接口
+      imgApi.photoAdd(this.fileData).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success'
+        })
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     // 上传图片前调用方法
     beforeUploadPicture (file) {
@@ -116,7 +128,7 @@ export default {
     // 上传图片成功
     uploadSuccess (res, file, fileList) {
       this.uploadComplete = true
-      this.$set(this.submitImg, res.id, res.name)
+      // this.$set(this.submitImg, res.id, res.name)
       // this.fileChange(fileList)
     },
     // 上传图片出错
@@ -125,8 +137,21 @@ export default {
       this.$message.error('上传出错')
     },
     // 移除图片
-    handleRemove (file, fileList) {
-      // this.fileChange(fileList)
+    photoRemoveFun (file, fileList) {
+      if (file.id === undefined) {
+        this.removeData = file.response
+      } else {
+        this.removeData = file
+      }
+      imgApi.cachePhotoDel(this.removeData).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success'
+        })
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     // 图片预览
     handlePictureCardPreview (file) {
