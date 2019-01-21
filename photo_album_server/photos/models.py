@@ -1,3 +1,4 @@
+# encoding: utf-8
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -17,10 +18,7 @@ class PhotoModel(models.Model):
     name = models.TextField(verbose_name="图片名称")
     describe = models.TextField(verbose_name="图片描述")
     photo_url = models.TextField(verbose_name="图片的路径")
-    thumbnail = models.ImageField(
-        verbose_name="缩略图"
-        , upload_to="static/user_img"
-    )
+    thumbnail = models.TextField(verbose_name="缩略图")
     insert_time = models.DateTimeField(auto_now=True, verbose_name="插入时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间")
 
@@ -33,7 +31,7 @@ class PhotoCacheModel(models.Model):
     """
     user = models.ForeignKey(
         User,
-        related_name='cuser',
+        related_name='fk_user',
         on_delete=models.CASCADE,
         default='',
         verbose_name='用户'
@@ -41,10 +39,7 @@ class PhotoCacheModel(models.Model):
     name = models.TextField(verbose_name="图片名称")
     describe = models.TextField(verbose_name="图片描述")
     photo_url = models.TextField(verbose_name="图片的路径")
-    thumbnail = models.ImageField(
-        verbose_name="缩略图"
-        , upload_to="static/data/images/cache"
-    )
+    thumbnail = models.TextField(verbose_name="缩略图")
     insert_time = models.DateTimeField(auto_now=True, verbose_name="插入时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间")
 
