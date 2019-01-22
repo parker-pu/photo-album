@@ -50,7 +50,7 @@ def to_thumbnail(img_obj):
     # 先保存到磁盘io
     pic_io = BytesIO()
     region.save(pic_io, pic.format)
-    return img_to_base64(pic_io.getvalue())
+    return img_to_base64(pic_io.getvalue()).decode(encoding='utf-8')
 
 
 def gen_md5(str_con):

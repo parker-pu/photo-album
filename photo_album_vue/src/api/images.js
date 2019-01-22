@@ -16,5 +16,9 @@ export default {
   // 缓存的图片删除
   cachePhotoDel (data) {
     return instance.delete('/api/v1/photos-cache/' + data.id + '/')
+  },
+  // 获取图片
+  photoGet () {
+    return instance.get('/api/v1/photos/')
   }
 }

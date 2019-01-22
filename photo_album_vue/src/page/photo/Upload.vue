@@ -87,7 +87,7 @@ export default {
             // 通过[{name: 'name', url: 'url地址'}]格式初始化照片墙
             this.editFiles.push({
               name: temp[t].name,
-              url: temp[t].thumbnail,
+              url: 'data:image/png;base64,' + temp[t].thumbnail,
               id: temp[t].id
             })
           }
@@ -107,7 +107,7 @@ export default {
       imgApi.photoAdd(this.fileData).then(() => {
         this.$notify({
           title: '成功',
-          message: '删除成功',
+          message: '提交成功',
           type: 'success'
         })
       }).catch((error) => {

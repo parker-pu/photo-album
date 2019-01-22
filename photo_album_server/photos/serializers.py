@@ -10,7 +10,10 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = PhotoModel
-        fields = "__all__"
+        fields = (
+            'id', 'name', 'describe', 'photo_url',
+            'thumbnail', 'insert_time', 'update_time'
+        )
 
 
 class PhotoCacheSerializer(serializers.HyperlinkedModelSerializer):

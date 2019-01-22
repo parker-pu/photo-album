@@ -4,6 +4,7 @@ import Home from '../page/home/Home'
 import Login from '../page/login/Login'
 import store from '../store/index.js'
 import UploadImg from '../page/photo/Upload'
+import ListImg from '../page/photo/List'
 
 Vue.use(Router)
 
@@ -23,6 +24,15 @@ const router = new Router({
         requiresAuth: true
       },
       children: [
+        // 图片墙
+        {
+          path: '/list_img',
+          name: 'ListImg',
+          component: ListImg,
+          meta: {
+            requiresAuth: true
+          }
+        },
         // 上传图片
         {
           path: '/upload_img',
