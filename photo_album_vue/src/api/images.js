@@ -9,6 +9,10 @@ export default {
   photoAdd (data) {
     return instance.post('/api/v1/photos/', data)
   },
+  // 提交缓冲区中的图片
+  photoDel (data) {
+    return instance.delete('/api/v1/photos/' + data.id + '/')
+  },
   // 获取缓冲区中的图片
   cachePhotoGet () {
     return instance.get('/api/v1/photos-cache/')

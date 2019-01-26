@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
 import router from '../router'
-import ElementUI from 'element-ui'
+import {Message} from 'element-ui'
 
 // 设置全局axios默认值
 axios.defaults.timeout = 5000 // 5000的超时验证
@@ -40,27 +40,27 @@ instance.interceptors.response.use(
             query: {redirect: router.currentRoute.fullPath}
             // 将跳转的路由path作为参数，登录成功后跳转到该路由
           })
-          ElementUI.Message.error('重新认证')
+          Message.error('重新认证')
           break
         case 400:
           var msg = ''
           for (var k in error.response.data.detailed) {
             msg += (k + ': ' + error.response.data.detailed[k])
           }
-          ElementUI.Message.error(msg)
+          Message.error(msg)
           break
         case 501:
-          ElementUI.Message.error('网络错误')
+          Message.error('网络错误')
           break
         case 500:
           if (error.response.data.message) {
-            ElementUI.Message.error(error.response.data.message)
+            Message.error(error.response.data.message)
           } else {
-            ElementUI.Message.error('服务器错误')
+            Message.error('服务器错误')
           }
           break
         case 504:
-          ElementUI.Message.error('网络错误')
+          Message.error('网络错误')
           break
         default:
           break

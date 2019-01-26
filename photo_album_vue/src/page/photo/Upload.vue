@@ -1,11 +1,11 @@
 <template>
   <div style="padding: 50px;">
     <el-form class="form-wrapper padding"
-             ref="editForm"
-             :model="editForm"
-             :rules="editRules"
+             ref="fileData"
+             :model="fileData"
+             :rules="rules"
              label-width="110px">
-      <el-form-item label="描述：">
+      <el-form-item label="描述：" prop="describe">
         <el-input
           type="textarea"
           :autosize="{ minRows: 1, maxRows: 4}"
@@ -65,11 +65,16 @@ export default {
       },
       removeData: '',
       editFiles: [],
-      // submitImg: [], // 需要提交的图片
       uploadComplete: true,
       upLoadUrl: imgApi.uploadUrl(),
       imgVisible: false, // 上传图片预览
-      dialogImageUrl: '' // 图片预览地址
+      dialogImageUrl: '', // 图片预览地址
+      rules: {
+        describe: [
+          {required: true, message: '描述不为空哦', trigger: 'blur'},
+          {min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur'}
+        ]
+      }
     }
   },
   created () {
@@ -110,6 +115,7 @@ export default {
           message: '提交成功',
           type: 'success'
         })
+        this.$router.push({path: '/list-img'})
       }).catch((error) => {
         console.log(error)
       })
@@ -128,12 +134,9 @@ export default {
     // 上传图片成功
     uploadSuccess (res, file, fileList) {
       this.uploadComplete = true
-      // this.$set(this.submitImg, res.id, res.name)
-      // this.fileChange(fileList)
     },
     // 上传图片出错
     uploadError () {
-      // uploadError (err, file, fileList) {
       this.$message.error('上传出错')
     },
     // 移除图片

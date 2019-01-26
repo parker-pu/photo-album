@@ -13,6 +13,9 @@ __pycache__/
 photo_album_server/.idea/
 photo_album_vue/.idea/
 
+# DB
+photo_album_server/db.sqlite3
+
 # Distribution / packaging
 .Python
 build/

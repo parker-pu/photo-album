@@ -3,18 +3,16 @@
   <div>
     <el-menu default-active="/"
              class="el-menu-vertical-demo"
-             @open="handleOpen"
-             @close="handleClose"
              :collapse="isCollapse" router>
       <el-menu-item index="">
         <i class="el-icon-arrow-right" v-if="isCollapse" @click="openLeft"></i>
         <i class="el-icon-arrow-left" v-else @click="closeLeft"></i>
       </el-menu-item>
-      <el-menu-item index="/list_img">
+      <el-menu-item index="/list-img">
         <i class="el-icon-picture-outline"></i>
         <span slot="title">我的图片</span>
       </el-menu-item>
-      <el-menu-item index="/upload_img">
+      <el-menu-item index="/upload-img">
         <i class="el-icon-upload"></i>
         <span slot="title">上传图片</span>
       </el-menu-item>
@@ -35,12 +33,6 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    },
     closeLeft () {
       this.isCollapse = true
       this.$emit('listenToChildEvent', this.isCollapse)
@@ -54,9 +46,15 @@ export default {
 </script>
 
 <style>
+  .el-menu-vertical-demo {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    min-height: 100vh;
+  }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 150px;
-    min-height: 250px;
+    min-height: 100%;
   }
 </style>
 

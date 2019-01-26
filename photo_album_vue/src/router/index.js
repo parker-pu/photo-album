@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../page/home/Home'
+import Home from '../page/Home'
 import Login from '../page/login/Login'
 import store from '../store/index.js'
 import UploadImg from '../page/photo/Upload'
@@ -20,13 +20,14 @@ const router = new Router({
       path: '/',
       name: 'Home',
       component: Home,
+      redirect: '/list-img',
       meta: {
         requiresAuth: true
       },
       children: [
         // 图片墙
         {
-          path: '/list_img',
+          path: '/list-img',
           name: 'ListImg',
           component: ListImg,
           meta: {
@@ -35,7 +36,7 @@ const router = new Router({
         },
         // 上传图片
         {
-          path: '/upload_img',
+          path: '/upload-img',
           name: 'UploadImg',
           component: UploadImg,
           meta: {
