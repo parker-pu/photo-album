@@ -20,7 +20,7 @@ photo_album_server/db.sqlite3
 .Python
 build/
 develop-eggs/
-dist/
+# dist/
 downloads/
 eggs/
 .eggs/

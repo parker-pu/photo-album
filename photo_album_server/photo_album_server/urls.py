@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import static
 from django.contrib import admin
 from django.urls import path, re_path, include
+from django.views.generic import TemplateView
+
 from photo_album_server import settings
 from user.views import AuthTokenView
 from rest_framework import routers
@@ -26,6 +28,7 @@ router_v1.register(r'photos-cache', PhotoCacheViewSet)
 router_v1.register(r'photos', PhotoViewSet)
 
 urlpatterns = [
+    re_path(r'^$', TemplateView.as_view(template_name="index.html")),
     path('admin/', admin.site.urls),
     path('api/v1/', include(router_v1.urls)),  # 相应的接口
 
