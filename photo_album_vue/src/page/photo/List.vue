@@ -8,21 +8,32 @@
                @mouseout="mouseOut(item)">
           <div v-if="pid === item.id" class="itemImgChild">
             <el-button-group>
-              <el-button icon="el-icon-view" type="primary" plain></el-button>
+              <el-button @click="showPhoto(item)" icon="el-icon-view" type="primary" plain></el-button>
               <el-button @click="deletePhoto(item)" icon="el-icon-delete" type="danger" plain></el-button>
             </el-button-group>
           </div>
         </div>
       </li>
     </ul>
+    <el-dialog :visible.sync="show_img" size="full" :modal="false" title="预览">
+      <!--<img width="100%" :src="show_img_url" alt="">-->
+      <img width="100%" :src="show_img_data" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
 import imgApi from '../../api/images' // 配置了图片上传接口地址的js文件
+import store from '../../store'
 
 export default {
   data () {
     return {
+      show_img: false,
+      show_img_url: '',
+      show_img_data: '',
+      myHeaders: {
+        Authorization: store.state.token
+      },
       imageList: [],
       pid: '',
       isEnlargeImage: false
@@ -57,6 +68,13 @@ export default {
     },
     // 鼠标移出
     mouseOut (row) {
+    },
+    showPhoto (row) {
+      this.show_img = true
+      // this.show_img_url = '/api/v1/original-photos?image_id=' + row.id
+      imgApi.orgPhotoGet('/api/v1/original-photos?image_id=' + row.id).then((response) => {
+        this.show_img_data = 'Blob' + response.data
+      })
     },
     deletePhoto (row) {
       this.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
@@ -94,6 +112,7 @@ export default {
   #box li {
     list-style: none;
   }
+
   .itemImg {
     position: relative; /* 相对定位 */
     width: 148px;
@@ -107,13 +126,15 @@ export default {
     width: 100%;
     height: 100%;
   }
+
   .itemImgChild {
     position: absolute; /* 据对定位 */
     width: 100%;
     height: 100%;
-    border: 1px solid rgba(0,0,0,0.3);
-    background-color: rgba(0,0,0,0.4);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.4);
   }
+
   .itemImgChild button {
     position: relative; /* 相对定位 */
     top: 50px;

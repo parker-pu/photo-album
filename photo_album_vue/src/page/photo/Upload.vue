@@ -122,8 +122,8 @@ export default {
     },
     // 上传图片前调用方法
     beforeUploadPicture (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        this.$message.error('上传图片不能大于10M')
+      if (file.size > 100 * 1024 * 1024) {
+        this.$message.error('上传图片不能大于100M')
         return false
       }
     },
@@ -158,6 +158,8 @@ export default {
     },
     // 图片预览
     handlePictureCardPreview (file) {
+      console.log(file)
+      console.log(file.url)
       this.dialogImageUrl = file.url
       this.imgVisible = true
     }

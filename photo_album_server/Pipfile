@@ -11,6 +11,8 @@ djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
 pillow = "*"
+coreapi = "*"
+pygments = "*"
 
 [requires]
 python_version = "3.7"

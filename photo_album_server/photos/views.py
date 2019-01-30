@@ -1,11 +1,13 @@
 # Create your views here.
 # encoding: utf-8
 import os
-
 from PIL import Image
+from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from custom.permission import CustomPermission
 from photos.models import PhotoModel, PhotoCacheModel
 from photos.serializers import PhotoSerializer, PhotoCacheSerializer
@@ -131,3 +133,28 @@ class PhotoCacheViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class OriginalPhotoViewSet(APIView):
+    """ 获取原始图片
+    判断该用户是否拥有这张图片，存在就返回图片，如果没有，就返回500错误
+    """
+    permission_classes = (CustomPermission,)  # 设置权限
+
+    @staticmethod
+    def get(request):
+        query_params = request.query_params.dict()
+        image_id = query_params.get('image_id')
+        if not image_id:
+            return Response(data='获取失败', status=500)
+
+        back = PhotoModel.objects \
+            .filter(id=image_id) \
+            .filter(user=request.user) \
+            .first()
+        if back:
+            with open(back.photo_url, 'rb') as f:
+                data = f.read()
+                return HttpResponse(data, content_type="image/jpeg;image/png")
+        else:
+            return Response(data='图片损坏或不存在', status=500)
