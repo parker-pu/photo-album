@@ -37,7 +37,7 @@
         <el-button type="primary" @click="photoSubmit">保存</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog class="preview-modal" :visible.sync="imgVisible" append-to-body>
+    <el-dialog class="preview-modal" :visible.sync="imgVisible" :modal="true" append-to-body>
       <img width="100%" :src="dialogImageUrl" alt="photo">
     </el-dialog>
   </div>
@@ -158,8 +158,6 @@ export default {
     },
     // 图片预览
     handlePictureCardPreview (file) {
-      console.log(file)
-      console.log(file.url)
       this.dialogImageUrl = file.url
       this.imgVisible = true
     }

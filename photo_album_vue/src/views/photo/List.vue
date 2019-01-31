@@ -15,25 +15,49 @@
         </div>
       </li>
     </ul>
-    <el-dialog :visible.sync="show_img" size="full" :modal="false" title="预览">
-      <!--<img width="100%" :src="show_img_url" alt="">-->
-      <img width="100%" :src="show_img_data" alt="">
+    <el-dialog :visible.sync="showImg" width="80%" title="" append-to-body>
+      <el-container>
+        <el-aside width="50%">
+          <img width="100%" height="100%" :src="showData.imgData" alt="">
+        </el-aside>
+        <el-main>
+          <el-form :model="showData"
+                   ref="editForm">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+              <el-input v-model="showData.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" :label-width="formLabelWidth">
+              <el-input v-model="showData.describe" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="创建时间" :label-width="formLabelWidth">
+              <el-date-picker type="date" v-model="showData.insertTime"
+                @change="dateFormat" style="width:100%;">
+              </el-date-picker>
+              <!--<span>{{ showData.insertTime }}</span>-->
+            </el-form-item>
+            <el-form-item label="更新时间" :label-width="formLabelWidth">
+              <span>{{ showData.updateTime }}</span>
+            </el-form-item>
+          </el-form>
+        </el-main>
+      </el-container>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" icon="el-icon-refresh" @click="downloadImg">更新</el-button>
+        <el-button type="primary" icon="el-icon-download" @click="downloadImg">下载</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import imgApi from '../../api/images' // 配置了图片上传接口地址的js文件
-import store from '../../store'
+// import moment from 'moment'
 
 export default {
   data () {
     return {
-      show_img: false,
-      show_img_url: '',
-      show_img_data: '',
-      myHeaders: {
-        Authorization: store.state.token
-      },
+      showImg: false,
+      showData: {},
+      formLabelWidth: '100px',
       imageList: [],
       pid: '',
       isEnlargeImage: false
@@ -43,6 +67,15 @@ export default {
     this.photoList()
   },
   methods: {
+    // 时间格式化
+    dateFormat (date) {
+      // let date = row[column.property]
+      // if (date === undefined) {
+      //   return ''
+      // }
+      return date
+      // return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
     // 获取图片
     photoList () {
       let temp = []
@@ -54,7 +87,10 @@ export default {
             this.imageList.push({
               name: temp[t].name,
               data: 'data:image/png;base64,' + temp[t].thumbnail,
-              id: temp[t].id
+              id: temp[t].id,
+              describe: temp[t].describe,
+              insertTime: temp[t].insert_time,
+              updateTime: temp[t].update_time
             })
           }
         }
@@ -70,10 +106,13 @@ export default {
     mouseOut (row) {
     },
     showPhoto (row) {
-      this.show_img = true
-      // this.show_img_url = '/api/v1/original-photos?image_id=' + row.id
-      imgApi.orgPhotoGet('/api/v1/original-photos?image_id=' + row.id).then((response) => {
-        this.show_img_data = 'Blob' + response.data
+      this.showImg = true
+      imgApi.orgPhotoGet(row).then((response) => {
+        let imgData = 'data:image/png;base64,' +
+          btoa(new Uint8Array(response.data).reduce((data, byte) =>
+            data + String.fromCharCode(byte), ''))
+        this.showData = Object.assign({}, row) // 这句是关键
+        this.showData.imgData = imgData
       })
     },
     deletePhoto (row) {
@@ -98,6 +137,18 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    downloadImg () {
+      // 生成一个a元素
+      let a = document.createElement('a')
+      // 创建一个单击事件
+      let event = new MouseEvent('click')
+      // 为下载的图片设置一个名称
+      a.download = name || this.showData.name
+      // 将生成的URL设置为a.href属性
+      a.href = this.showData.imgData
+      // 触发a的单击事件
+      a.dispatchEvent(event)
     }
   }
 }

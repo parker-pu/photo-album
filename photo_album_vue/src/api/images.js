@@ -18,8 +18,10 @@ export default {
     return instance.get('/api/v1/photos/')
   },
   // 获取源图片
-  orgPhotoGet (url) {
-    return instance.get(url)
+  orgPhotoGet (data) {
+    return instance.get('/api/v1/original-photos?image_id=' + data.id, {
+      responseType: 'arraybuffer'
+    })
   },
   // 获取缓冲区中的图片
   cachePhotoGet () {

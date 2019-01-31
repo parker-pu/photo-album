@@ -20,7 +20,7 @@ class AuthTokenView(ObtainAuthToken):
         user = serializer.validated_data['user']
 
         # 先删除 Token，再生产一个
-        Token.objects.filter(user=user).delete()
+        # Token.objects.filter(user=user).delete()
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,

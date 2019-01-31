@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../page/Home'
-import Login from '../page/login/Login'
+import Home from '../views/Home'
+import Login from '../views/login/Login'
 import store from '../store/index.js'
-import UploadImg from '../page/photo/Upload'
-import ListImg from '../page/photo/List'
+import UploadImg from '../views/photo/Upload'
+import ListImg from '../views/photo/List'
 
 Vue.use(Router)
 
