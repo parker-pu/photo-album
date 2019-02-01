@@ -24,7 +24,8 @@ export default {
   // 获取源图片
   orgPhotoGet (data) {
     return instance.get('/api/v1/original-photos?image_id=' + data.id, {
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
+      timeout: 60000
     })
   },
   // 获取缓冲区中的图片

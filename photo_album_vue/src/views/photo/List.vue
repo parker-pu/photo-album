@@ -19,6 +19,7 @@
       <el-container>
         <el-aside width="50%">
           <img width="100%" height="100%" :src="showData.imgData" alt="">
+          <!--<img width="100%" height="100%" src="http://www.wsecat.com/static/user_data/images/2/f3f3b70b6289e3693c66fb7f38e4b5e5.jpg" alt="">-->
         </el-aside>
         <el-main>
           <el-form :model="showData"
@@ -100,7 +101,7 @@ export default {
     showPhoto (row) {
       this.showImg = true
       imgApi.orgPhotoGet(row).then((response) => {
-        let imgData = 'data:image/png;base64,' +
+        let imgData = 'data:image/jpeg;image/png;base64,' +
           btoa(new Uint8Array(response.data).reduce((data, byte) =>
             data + String.fromCharCode(byte), ''))
         this.showData = Object.assign({}, row) // 这句是关键
