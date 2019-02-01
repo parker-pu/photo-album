@@ -21,5 +21,5 @@
 ![获取高清照片](https://github.com/Pu-Yongjun/photo-album/raw/master/doc/img/show_img.png)
 
 - 修改密码
-![修改密码](https://github.com/Pu-Yongjun/DataM/raw/master/doc/img/update_passwd.png)
+![修改密码](https://github.com/Pu-Yongjun/photo-album/raw/master/doc/img/update_passwd.png)
 
