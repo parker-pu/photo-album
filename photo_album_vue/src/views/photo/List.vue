@@ -19,10 +19,12 @@
       <el-container>
         <el-aside width="50%">
           <img width="100%" height="100%" :src="showData.imgData" alt="">
-          <!--<img width="100%" height="100%" src="http://www.wsecat.com/static/user_data/images/2/f3f3b70b6289e3693c66fb7f38e4b5e5.jpg" alt="">-->
         </el-aside>
         <el-main>
           <el-form :model="showData"
+                   element-loading-text="拼命加载中"
+                   element-loading-spinner="el-icon-loading"
+                   element-loading-background="rgba(0, 0, 0, 0.8)"
                    ref="editForm">
             <el-form-item label="名称" :label-width="formLabelWidth">
               <el-input v-model="showData.name" autocomplete="off"></el-input>
@@ -58,7 +60,8 @@ export default {
       formLabelWidth: '100px',
       imageList: [],
       pid: '',
-      isEnlargeImage: false
+      isEnlargeImage: false,
+      loading2: true
     }
   },
   created () {
@@ -99,7 +102,12 @@ export default {
     mouseOut (row) {
     },
     showPhoto (row) {
-      this.showImg = true
+      const loading = this.$loading({
+        lock: true,
+        text: '拼命加载图片中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       imgApi.orgPhotoGet(row).then((response) => {
         let imgData = 'data:image/jpeg;image/png;base64,' +
           btoa(new Uint8Array(response.data).reduce((data, byte) =>
@@ -109,6 +117,10 @@ export default {
         // 时间格式化
         this.showData.insertTime = this.dateFormat(this.showData.insertTime)
         this.showData.updateTime = this.dateFormat(this.showData.updateTime)
+        loading.close()
+        this.showImg = true
+      }).catch(() => {
+        loading.close()
       })
     },
     deletePhoto (row) {

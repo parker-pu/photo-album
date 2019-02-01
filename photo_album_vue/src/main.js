@@ -5,9 +5,27 @@ import App from './App'
 import router from './router'
 
 import {
-  Button, Select, MessageBox, Message, MenuItem, Menu,
-  Tabs, Row, Col, Upload, TabPane, Form, FormItem, Input,
-  ButtonGroup, Dialog, Container, Aside, Main, Notification
+  Button,
+  Select,
+  MessageBox,
+  Message,
+  MenuItem,
+  Menu,
+  Tabs,
+  Row,
+  Col,
+  Upload,
+  Form,
+  FormItem,
+  Input,
+  ButtonGroup,
+  Dialog,
+  Container,
+  Aside,
+  Main,
+  Notification,
+  Loading,
+  TabPane
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
@@ -35,6 +53,7 @@ Vue.use(Main)
 Vue.prototype.$confirm = MessageBox.confirm // 提示删除
 Vue.prototype.$notify = Notification // 左上脚弹出
 Vue.prototype.$message = Message // 消息提示
+Vue.prototype.$loading = Loading.service
 
 Vue.config.productionTip = false
 

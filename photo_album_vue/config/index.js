@@ -12,14 +12,16 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api/': {
-        target: 'http://0.0.0.0:8000', //请求这个地址
+        // target: 'http://0.0.0.0:8000', //请求这个地址
+        target: 'http://www.wsecat.com', //请求这个地址
         changeOrigin: true,//是否跨域
         pathRewrite: {
           '^/api/': '/api/'   //地址重写，将 /ajax替换成  ''
         }
       },
       '/api-token-auth/': {
-        target: 'http://0.0.0.0:8000', //请求这个地址
+        // target: 'http://0.0.0.0:8000', //请求这个地址
+        target: 'http://www.wsecat.com', //请求这个地址
         changeOrigin: true,//是否跨域
         pathRewrite: {
           '^/api-token-auth/': '/api-token-auth/'   //地址重写，将 /ajax替换成  ''
