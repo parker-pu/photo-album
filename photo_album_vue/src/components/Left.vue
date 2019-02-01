@@ -16,7 +16,7 @@
         <i class="el-icon-upload"></i>
         <span slot="title">上传图片</span>
       </el-menu-item>
-      <el-menu-item index="/">
+      <el-menu-item index="/put-password">
         <i class="el-icon-setting"></i>
         <span slot="title">设置</span>
       </el-menu-item>

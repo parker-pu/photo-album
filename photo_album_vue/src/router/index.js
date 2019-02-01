@@ -5,6 +5,7 @@ import Login from '../views/login/Login'
 import store from '../store/index.js'
 import UploadImg from '../views/photo/Upload'
 import ListImg from '../views/photo/List'
+import Password from '../views/set/Password'
 
 Vue.use(Router)
 
@@ -39,6 +40,15 @@ const router = new Router({
           path: '/upload-img',
           name: 'UploadImg',
           component: UploadImg,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        // 更改密码
+        {
+          path: '/put-password',
+          name: 'Password',
+          component: Password,
           meta: {
             requiresAuth: true
           }

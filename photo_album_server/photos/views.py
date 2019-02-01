@@ -68,6 +68,12 @@ class PhotoViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    # 更新图片信息
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        PhotoModel.objects.filter(id=instance.id).update(**request.data)
+        return Response('更新成功')
+
 
 class PhotoCacheViewSet(viewsets.ModelViewSet):
     """ 处理缓存的图片

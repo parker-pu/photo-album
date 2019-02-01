@@ -30,19 +30,16 @@
               <el-input v-model="showData.describe" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="创建时间" :label-width="formLabelWidth">
-              <el-date-picker type="date" v-model="showData.insertTime"
-                @change="dateFormat" style="width:100%;">
-              </el-date-picker>
-              <!--<span>{{ showData.insertTime }}</span>-->
+              <el-input v-model="showData.insertTime" autocomplete="off" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="更新时间" :label-width="formLabelWidth">
-              <span>{{ showData.updateTime }}</span>
+              <el-input v-model="showData.updateTime" autocomplete="off" :disabled="true"></el-input>
             </el-form-item>
           </el-form>
         </el-main>
       </el-container>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" icon="el-icon-refresh" @click="downloadImg">更新</el-button>
+        <el-button type="primary" icon="el-icon-refresh" @click="updateImgInfo">更新</el-button>
         <el-button type="primary" icon="el-icon-download" @click="downloadImg">下载</el-button>
       </div>
     </el-dialog>
@@ -50,7 +47,7 @@
 </template>
 <script>
 import imgApi from '../../api/images' // 配置了图片上传接口地址的js文件
-// import moment from 'moment'
+import moment from 'moment'
 
 export default {
   data () {
@@ -69,12 +66,7 @@ export default {
   methods: {
     // 时间格式化
     dateFormat (date) {
-      // let date = row[column.property]
-      // if (date === undefined) {
-      //   return ''
-      // }
-      return date
-      // return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // 获取图片
     photoList () {
@@ -113,6 +105,9 @@ export default {
             data + String.fromCharCode(byte), ''))
         this.showData = Object.assign({}, row) // 这句是关键
         this.showData.imgData = imgData
+        // 时间格式化
+        this.showData.insertTime = this.dateFormat(this.showData.insertTime)
+        this.showData.updateTime = this.dateFormat(this.showData.updateTime)
       })
     },
     deletePhoto (row) {
@@ -149,6 +144,23 @@ export default {
       a.href = this.showData.imgData
       // 触发a的单击事件
       a.dispatchEvent(event)
+    },
+    updateImgInfo () {
+      let putData = {}
+      putData.id = this.showData.id
+      putData.name = this.showData.name
+      putData.describe = this.showData.describe
+      imgApi.photoUpdate(putData).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success'
+        })
+        this.photoList()
+        this.showImg = false
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }

@@ -20,13 +20,14 @@ from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 
 from photo_album_server import settings
-from user.views import AuthTokenView
+from user.views import AuthTokenView, UserViewSet
 from rest_framework import routers
 from photos.views import PhotoViewSet, PhotoCacheViewSet, OriginalPhotoViewSet
 
 router_v1 = routers.DefaultRouter()
 router_v1.register(r'photos-cache', PhotoCacheViewSet)
 router_v1.register(r'photos', PhotoViewSet)
+router_v1.register(r'users', UserViewSet)
 
 API_TITLE = '相册'
 API_DESCRIPTION = '这是个人用来玩的相册'

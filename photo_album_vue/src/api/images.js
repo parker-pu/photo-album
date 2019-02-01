@@ -13,6 +13,10 @@ export default {
   photoDel (data) {
     return instance.delete('/api/v1/photos/' + data.id + '/')
   },
+  // 更新
+  photoUpdate (data) {
+    return instance.put('/api/v1/photos/' + data.id + '/', data)
+  },
   // 获取图片
   photoGet () {
     return instance.get('/api/v1/photos/')
