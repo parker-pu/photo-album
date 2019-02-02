@@ -48,13 +48,13 @@ export default {
 <style>
   .el-menu-vertical-demo {
     position: absolute;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
     min-height: 100vh;
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 150px;
-    min-height: 100%;
+    min-height: 100vh;
   }
 </style>
 
