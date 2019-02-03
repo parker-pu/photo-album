@@ -1,13 +1,11 @@
 # Create your views here.
 import datetime
-
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-
 from custom.permission import CustomPermission
 from user.serializers import UserSerializer
 

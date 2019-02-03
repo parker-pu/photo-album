@@ -106,8 +106,8 @@ export default {
 
 <style scoped>
   .resetPd {
-    position: absolute; /* 相对定位 */
-    top: 10%;
+    position: relative; /* 相对定位 */
+    top: 40px;
     left: 30%;
     width: 40%;
   }

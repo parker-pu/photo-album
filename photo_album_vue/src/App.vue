@@ -10,6 +10,9 @@
     top: 0;
     left: 0;
     right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #f0f0f0;
   }
 </style>
 

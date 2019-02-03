@@ -3,32 +3,40 @@
     <el-aside :width="leftSize" class="aside">
       <Left v-on:listenToChildEvent="updateLeft"></Left>
     </el-aside>
-    <el-main style="padding:0px;">
-      <router-view/>
-    </el-main>
+    <el-container>
+      <!-- 面包屑 -->
+      <el-header style="height: 40px;">
+        <Breadcrumb></Breadcrumb>
+      </el-header>
+      <el-main>
+        <router-view />
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
 <script>
+import Breadcrumb from '../components/Breadcrumb'
 import Left from '../components/Left'
 
 export default {
-  name: 'Dashboard',
+  name: 'Home',
   components: {
-    Left
+    Left,
+    Breadcrumb
   },
   data () {
     return {
       imgUrl: require('../assets/logo.png'),
-      leftSize: '65px'
+      leftSize: '40px'
     }
   },
   methods: {
     updateLeft (isCollapse) {
       if (isCollapse === true) {
-        this.leftSize = '65px'
+        this.leftSize = '40px'
       } else {
-        this.leftSize = '151px'
+        this.leftSize = '120px'
       }
     }
   }
@@ -38,5 +46,10 @@ export default {
 <style scoped>
   .el-aside {
     min-height:100vh;
+  }
+  .el-header {
+    background-color: #ffffff;
+    color: #333;
+    line-height: 40px;
   }
 </style>

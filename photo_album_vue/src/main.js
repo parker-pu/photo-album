@@ -25,7 +25,13 @@ import {
   Main,
   Notification,
   Loading,
-  TabPane
+  TabPane,
+  Breadcrumb,
+  BreadcrumbItem,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Header
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
@@ -42,13 +48,19 @@ Vue.use(Row)
 Vue.use(Col)
 Vue.use(Upload)
 Vue.use(TabPane)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
 Vue.use(Dialog)
 Vue.use(Container)
 Vue.use(Aside)
+Vue.use(Header)
 Vue.use(Main)
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 
 Vue.prototype.$confirm = MessageBox.confirm // 提示删除
 Vue.prototype.$notify = Notification // 左上脚弹出
